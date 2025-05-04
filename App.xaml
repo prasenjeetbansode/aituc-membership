@@ -1,0 +1,14 @@
+﻿<Application
+    x:Class="AITUC.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:AITUC.Converters"
+    xmlns:views="clr-namespace:AITUC.Views"
+    xmlns:vm="clr-namespace:AITUC.ViewModels"
+    StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
