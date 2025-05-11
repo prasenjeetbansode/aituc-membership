@@ -1,0 +1,40 @@
+﻿<Window
+    x:Class="AITUC.LoginWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fluent="urn:fluent-ribbon"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:AITUC.ViewModels"
+    Title="Login"
+    Width="400"
+    Height="300"
+    ResizeMode="CanResize"
+    ShowInTaskbar="True"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="SingleBorderWindow"
+    mc:Ignorable="d">
+
+    <Window.DataContext>
+        <vm:LoginViewModel />
+    </Window.DataContext>
+
+    <Grid>
+        <StackPanel
+            Width="250"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <TextBlock Text="Username" />
+            <TextBox Margin="0,5" Text="{Binding Username}" />
+
+            <TextBlock Text="Password" />
+            <PasswordBox x:Name="PasswordBox" Margin="0,5" />
+
+            <Button
+                Margin="0,10"
+                Command="{Binding LoginCommand}"
+                CommandParameter="{Binding ElementName=PasswordBox}"
+                Content="Login" />
+        </StackPanel>
+    </Grid>
+</Window>

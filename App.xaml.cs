@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using AITUC.Views;
+using System.Windows;
 
 namespace AITUC
 {
@@ -7,5 +8,6 @@ namespace AITUC
         public App()
         {
         }
+        
     }
 }

@@ -14,7 +14,7 @@
     </UserControl.DataContext>
     <Grid>
         <DataGrid
-            Margin="10"
+            Margin="0,20,20,0"
             AutoGenerateColumns="False"
             CanUserAddRows="False"
             ItemsSource="{Binding Users}">

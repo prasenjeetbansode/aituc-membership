@@ -1,10 +1,12 @@
 using AITUC.Interface;
 using AITUC.Models;
+using AITUC.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Microsoft.Data.Sqlite;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace AITUC.ViewModels
 {
@@ -17,18 +19,24 @@ namespace AITUC.ViewModels
         [ObservableProperty]
         private string username = string.Empty;
 
-        [ObservableProperty]
-        private string password = string.Empty;
+        private readonly Window _window;
 
-        [RelayCommand]
-        private void Login()
+        public string Password { get; internal set; }
+
+        public LoginViewModel(Window window)
+        {
+            _window = window;
+        }
+        public LoginViewModel() { }
+     [RelayCommand]
+        private void Login(PasswordBox passwordBox)
         {
             using var conn = new SqliteConnection(connectionString);
             conn.Open();
 
             using var cmd = new SqliteCommand("SELECT * FROM Users WHERE Username = @u AND Password = @p", conn);
             cmd.Parameters.AddWithValue("@u", Username);
-            cmd.Parameters.AddWithValue("@p", Password);
+            cmd.Parameters.AddWithValue("@p", passwordBox.Password);
 
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
@@ -43,7 +51,12 @@ namespace AITUC.ViewModels
                     CanWrite = reader.GetBoolean(reader.GetOrdinal("CanWrite")),
                 };
 
-                LoginSucceeded.Invoke(user);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var mainWindow = new MainWindow(user);
+                    mainWindow.Show();
+                    _window?.Close();
+                });
             }
             else
             {

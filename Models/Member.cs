@@ -17,8 +17,8 @@ namespace AITUC.Models
         public int Daughter { get; set; } = 0;
         public int? WorkYear { get; set; }
         public string? WorkDescription { get; set; }
-        public bool BPLCard { get; set; } = false;
-        public bool RationCard { get; set; } = false;
+        public string BPLCard { get; set; } 
+        public string RationCard { get; set; } 
         public string? WorkPlaces { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public ICollection<Membership> Memberships { get; set; } = new List<Membership>();

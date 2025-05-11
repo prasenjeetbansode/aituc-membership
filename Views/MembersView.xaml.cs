@@ -1,4 +1,5 @@
-﻿using AITUC.ViewModels;
+﻿using AITUC.Models;
+using AITUC.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,13 @@ namespace AITUC.Views
         public MembersView()
         {
             InitializeComponent();
-            DataContext = new MembersViewModel();
+
+        }
+        public MembersView(Users users)
+        {
+            InitializeComponent();
+
+            DataContext = new MembersViewModel(users);
         }
     }
 }

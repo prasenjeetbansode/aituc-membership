@@ -1,57 +1,82 @@
-﻿<Window
+﻿<fluent:RibbonWindow
     x:Class="AITUC.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fluent="urn:fluent-ribbon"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:AITUC.Views"
     xmlns:vm="clr-namespace:AITUC.ViewModels"
     Title="Membership Manager"
-    Width="800"
-    Height="450"
+    ResizeMode="CanResize"
+    WindowState="Maximized"
     mc:Ignorable="d">
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-    </Window.Resources>
-    <Window.DataContext>
+
+    <fluent:RibbonWindow.DataContext>
         <vm:MainViewModel />
-    </Window.DataContext>
-    <Grid>
-        <DockPanel>
+    </fluent:RibbonWindow.DataContext>
 
-            <!--  Navigation Bar  -->
-            <StackPanel
-                Width="200"
-                Background="#2c3e50"
-                DockPanel.Dock="Left"
-                Orientation="Vertical">
-                <Button
-                    Margin="10"
-                    Background="#34495e"
-                    Command="{Binding NavigateCommand}"
-                    CommandParameter="LoginView"
-                    Content="Login"
-                    Foreground="White" />
-                <Button
-                    Margin="10"
-                    Background="#34495e"
-                    Command="{Binding NavigateCommand}"
-                    CommandParameter="MembersView"
-                    Content="Members"
-                    Foreground="White"
-                    Visibility="{Binding CanRead, Converter={StaticResource BoolToVisibilityConverter}}" />
-                <Button
-                    Margin="10"
-                    Background="#34495e"
-                    Command="{Binding NavigateCommand}"
-                    CommandParameter="UsersView"
-                    Content="Users"
-                    Foreground="White"
-                    Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}}" />
-            </StackPanel>
+    <DockPanel>
 
-            <!--  Content Area  -->
-            <ContentControl Content="{Binding CurrentView}" />
-        </DockPanel>
-    </Grid>
-</Window>
+        <!--  Ribbon Bar  -->
+        <fluent:Ribbon DockPanel.Dock="Top">
+            <fluent:RibbonTabItem Header="Navigation">
+                <fluent:RibbonGroupBox Header="Views">
+                    <fluent:Button
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="MembersView"
+                        Header="Members"
+                        Icon="👤"
+                        IsEnabled="{Binding CanRead}" />
+                    <fluent:Button
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="UsersView"
+                        Header="Users"
+                        Icon="🛠️"
+                        IsEnabled="{Binding IsAdmin}" />
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+
+            <fluent:RibbonTabItem Header="Settings">
+                <fluent:RibbonGroupBox Header="Theme">
+                    <fluent:ToggleButton Header="Dark Mode" IsChecked="{Binding IsDarkTheme}" />
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+        </fluent:Ribbon>
+
+        <!--  Main Content with Tabs  -->
+        <TabControl
+            Margin="10"
+            Background="White"
+            FontSize="14"
+            ItemsSource="{Binding OpenTabs}"
+            SelectedItem="{Binding SelectedTab}">
+
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="5,0" Text="{Binding Title}" />
+                        <Button
+                            Width="16"
+                            Height="16"
+                            Padding="0"
+                            Background="Transparent"
+                            Command="{Binding CloseTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            CommandParameter="{Binding}"
+                            Content="×"
+                            FontWeight="Bold"
+                            Foreground="Gray"
+                            Style="{x:Null}"
+                            ToolTip="Close Tab" />
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <ContentControl Content="{Binding Content}" />
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </DockPanel>
+</fluent:RibbonWindow>

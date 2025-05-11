@@ -1,15 +1,11 @@
-using AITUC.Data;
-using AITUC.Interface;
 using AITUC.Models;
-using AITUC.Services;
+using AITUC.ViewModels;
 using AITUC.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
-
+using System.Windows.Input;
 namespace AITUC.ViewModels
 {
     public partial class MainViewModel : ObservableObject
@@ -17,59 +13,60 @@ namespace AITUC.ViewModels
         [ObservableProperty]
         private Users? currentUser;
 
-        [ObservableProperty]
-        private UserControl? currentView;
+        public ObservableCollection<TabItemViewModel> OpenTabs { get; set; } = new();
+        public TabItemViewModel? SelectedTab { get; set; }
 
-        public bool CanRead => CurrentUser?.CanRead ?? false;
+        public ICommand NavigateCommand { get; }
+        public ICommand CloseTabCommand { get; }
+
+        public bool CanRead => CurrentUser?.CanRead ?? true;
         public bool IsAdmin => CurrentUser?.Role == "admin";
 
         public MainViewModel()
+            : this(new Users { Username = "Guest", Role = "guest", CanRead = true }) { }
+
+        public MainViewModel(Users users)
         {
+            CurrentUser = users;
+
+            NavigateCommand = new RelayCommand<string>(NavigateTo);
+            CloseTabCommand = new RelayCommand<TabItemViewModel>(CloseTab);
+
+            NavigateTo("MembersView");
         }
 
-        [RelayCommand]
-        private void Navigate(string? viewName)
+        private void NavigateTo(string? viewName)
         {
-            if (string.IsNullOrEmpty(viewName)) return;
+            if (string.IsNullOrWhiteSpace(viewName))
+                viewName = "MembersView";
 
-            switch (viewName)
+            var existing = OpenTabs.FirstOrDefault(t => t.ViewName == viewName);
+            if (existing != null)
             {
-                case "LoginView":
-                    var loginView = new LoginView();
-                    if (loginView.DataContext is LoginViewModel loginVM)
-                    {
-                        loginVM.LoginSucceeded += OnLoginSucceeded;
-                    }
-                    CurrentView = loginView;
-                    break;
-
-                case "MembersView":
-                    if (CanRead)
-                    {
-                        var view = new MembersView();
-                        view.DataContext = new MembersViewModel(currentUser); // or pass user if needed
-                        CurrentView = view;
-                    }
-                    break;
-
-                case "UsersView":
-                    if (IsAdmin)
-                    {
-                        var view = new UserView();
-                        view.DataContext = new UsersViewModel(currentUser); // or pass user if needed
-                        CurrentView = view;
-                    }
-                    break;
+                SelectedTab = existing;
+                return;
             }
 
-            OnPropertyChanged(nameof(CanRead));
-            OnPropertyChanged(nameof(IsAdmin));
+            var newTab = new TabItemViewModel
+            {
+                Title = viewName,
+                ViewName = viewName,
+                Content = viewName switch
+                {
+                    "MembersView" => new MembersView(),
+                    "UsersView" => new UserView(),
+                    
+                }
+            };
+
+            OpenTabs.Add(newTab);
+            SelectedTab = newTab;
         }
 
-        private void OnLoginSucceeded(Users loggedInUser)
+        private void CloseTab(TabItemViewModel tab)
         {
-            CurrentUser = loggedInUser;
-            Navigate("MembersView");
+            if (OpenTabs.Contains(tab))
+                OpenTabs.Remove(tab);
         }
     }
 }
