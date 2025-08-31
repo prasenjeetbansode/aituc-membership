@@ -13,7 +13,7 @@ namespace AITUC.ViewModels
         [ObservableProperty]
         private Users? currentUser;
 
-        public ObservableCollection<TabItemViewModel> OpenTabs { get; set; } = new();
+        public ObservableCollection<TabItemViewModel> OpenTabs { get; set; } =new();
         public TabItemViewModel? SelectedTab { get; set; }
 
         public ICommand NavigateCommand { get; }
@@ -23,18 +23,25 @@ namespace AITUC.ViewModels
         public bool IsAdmin => CurrentUser?.Role == "admin";
 
         public MainViewModel()
-            : this(new Users { Username = "Guest", Role = "guest", CanRead = true }) { }
-
-        public MainViewModel(Users users)
+         // Pass null to delegate logic to the second constructor
         {
-            CurrentUser = users;
+        }
+
+        public MainViewModel(Users? users)
+        {
+            CurrentUser = users ?? new Users
+            {
+                Username = "Guest",
+                Role = "guest",
+                CanRead = true
+            };
+            this.currentUser = users;
 
             NavigateCommand = new RelayCommand<string>(NavigateTo);
-            CloseTabCommand = new RelayCommand<TabItemViewModel>(CloseTab);
+            CloseTabCommand = new RelayCommand<TabItemViewModel?>(CloseTab);
 
             NavigateTo("MembersView");
         }
-
         private void NavigateTo(string? viewName)
         {
             if (string.IsNullOrWhiteSpace(viewName))
@@ -53,9 +60,9 @@ namespace AITUC.ViewModels
                 ViewName = viewName,
                 Content = viewName switch
                 {
-                    "MembersView" => new MembersView(),
-                    "UsersView" => new UserView(),
-                    
+                    "MembersView" => new MembersView(currentUser),
+                    "UsersView" => new UserView(currentUser),
+                    _ => throw new NotImplementedException(),
                 }
             };
 

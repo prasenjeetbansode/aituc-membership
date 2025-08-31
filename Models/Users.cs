@@ -30,6 +30,6 @@ namespace AITUC.Models
         public bool CanRead { get; set; } = true;
 
         [Required]
-        public bool CanWrite { get; set; } = false;
+        public bool CanWrite { get; set; } 
     }
 }

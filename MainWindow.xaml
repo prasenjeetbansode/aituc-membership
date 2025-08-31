@@ -4,79 +4,95 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fluent="urn:fluent-ribbon"
+    xmlns:materialIcons1="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:AITUC.Views"
     xmlns:vm="clr-namespace:AITUC.ViewModels"
     Title="Membership Manager"
+    Background="White"
     ResizeMode="CanResize"
     WindowState="Maximized"
+    WindowStyle="ToolWindow"
     mc:Ignorable="d">
 
     <fluent:RibbonWindow.DataContext>
         <vm:MainViewModel />
     </fluent:RibbonWindow.DataContext>
 
-    <DockPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
         <!--  Ribbon Bar  -->
-        <fluent:Ribbon DockPanel.Dock="Top">
+        <fluent:Ribbon Grid.Row="0" Height="100">
             <fluent:RibbonTabItem Header="Navigation">
                 <fluent:RibbonGroupBox Header="Views">
                     <fluent:Button
                         Command="{Binding NavigateCommand}"
                         CommandParameter="MembersView"
                         Header="Members"
-                        Icon="👤"
-                        IsEnabled="{Binding CanRead}" />
+                        IsEnabled="{Binding CanRead}">
+                        <fluent:Button.Icon>
+                            <materialIcons1:PackIcon
+                                Width="30"
+                                Height="30"
+                                Kind="Account" />
+                        </fluent:Button.Icon>
+                    </fluent:Button>
+
                     <fluent:Button
                         Command="{Binding NavigateCommand}"
                         CommandParameter="UsersView"
                         Header="Users"
-                        Icon="🛠️"
-                        IsEnabled="{Binding IsAdmin}" />
-                </fluent:RibbonGroupBox>
-            </fluent:RibbonTabItem>
-
-            <fluent:RibbonTabItem Header="Settings">
-                <fluent:RibbonGroupBox Header="Theme">
-                    <fluent:ToggleButton Header="Dark Mode" IsChecked="{Binding IsDarkTheme}" />
+                        IsEnabled="{Binding IsAdmin}">
+                        <fluent:Button.Icon>
+                            <materialIcons1:PackIcon
+                                Width="30"
+                                Height="30"
+                                Kind="Settings" />
+                        </fluent:Button.Icon>
+                    </fluent:Button>
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
         </fluent:Ribbon>
 
         <!--  Main Content with Tabs  -->
-        <TabControl
-            Margin="10"
-            Background="White"
-            FontSize="14"
-            ItemsSource="{Binding OpenTabs}"
-            SelectedItem="{Binding SelectedTab}">
+        <DockPanel Grid.Row="1">
+            <TabControl
+                Margin="10"
+                Background="White"
+                FontSize="14"
+                ItemsSource="{Binding OpenTabs}"
+                SelectedItem="{Binding SelectedTab}">
 
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="5,0" Text="{Binding Title}" />
-                        <Button
-                            Width="16"
-                            Height="16"
-                            Padding="0"
-                            Background="Transparent"
-                            Command="{Binding CloseTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            CommandParameter="{Binding}"
-                            Content="×"
-                            FontWeight="Bold"
-                            Foreground="Gray"
-                            Style="{x:Null}"
-                            ToolTip="Close Tab" />
-                    </StackPanel>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="5,0" Text="{Binding Title}" />
+                            <Button
+                                Width="16"
+                                Height="16"
+                                Padding="0"
+                                Background="White"
+                                Command="{Binding CloseTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}"
+                                Content="×"
+                                FontWeight="Bold"
+                                Style="{x:Null}"
+                                ToolTip="Close Tab" />
+                        </StackPanel>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
 
-            <TabControl.ContentTemplate>
-                <DataTemplate>
-                    <ContentControl Content="{Binding Content}" />
-                </DataTemplate>
-            </TabControl.ContentTemplate>
-        </TabControl>
-    </DockPanel>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding Content}" />
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+        </DockPanel>
+    </Grid>
 </fluent:RibbonWindow>
