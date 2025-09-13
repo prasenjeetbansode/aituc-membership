@@ -17,7 +17,7 @@ namespace AITUC.ViewModels
         public TabItemViewModel? SelectedTab { get; set; }
 
         public ICommand NavigateCommand { get; }
-        public ICommand CloseTabCommand { get; }
+        public ICommand CloseTabCommand { get; set; }
 
         public bool CanRead => CurrentUser?.CanRead ?? true;
         public bool IsAdmin => CurrentUser?.Role == "admin";
@@ -38,7 +38,7 @@ namespace AITUC.ViewModels
             this.currentUser = users;
 
             NavigateCommand = new RelayCommand<string>(NavigateTo);
-            CloseTabCommand = new RelayCommand<TabItemViewModel?>(CloseTab);
+            CloseTabCommand = new RelayCommand<TabItemViewModel>(CloseTab);
 
             NavigateTo("MembersView");
         }

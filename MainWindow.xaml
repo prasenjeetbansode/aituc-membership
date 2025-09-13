@@ -18,16 +18,16 @@
     <fluent:RibbonWindow.DataContext>
         <vm:MainViewModel />
     </fluent:RibbonWindow.DataContext>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <!--  Ribbon  -->
             <RowDefinition Height="*" />
+            <!--  Main Content  -->
         </Grid.RowDefinitions>
 
         <!--  Ribbon Bar  -->
-        <fluent:Ribbon Grid.Row="0" Height="100">
+        <fluent:Ribbon Grid.Row="0">
             <fluent:RibbonTabItem Header="Navigation">
                 <fluent:RibbonGroupBox Header="Views">
                     <fluent:Button
@@ -77,7 +77,7 @@
                                 Height="16"
                                 Padding="0"
                                 Background="White"
-                                Command="{Binding CloseTabCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Command="{Binding DataContext.CloseTabCommand, RelativeSource={RelativeSource AncestorType=TabControl}}"
                                 CommandParameter="{Binding}"
                                 Content="×"
                                 FontWeight="Bold"
